@@ -1,4 +1,5 @@
 # Leak report
+## Charlot Shaw
 Valgrind results
 
 ```
@@ -28,3 +29,9 @@ Valgrind results
 # Obeservations
 `cleaned` on line 62 in the original file is used to make a calculation, and could be freed afterwards, say on line 69.
 It is the only leak detected by Valgrind
+
+## Solution
+At first I tried directly to free `cleaned`, and it worked for most cases. However, I would be warned whenever the function was called on the empty string.
+I tried at first to check if the string was empty, but couldn't find a way that didn't add more leaks. I turned the problem around and solved it by
+using `strdup` to make a duplicate of the empty string, reasoning this would use `malloc` or it's brethren under the hood. This meant all returns from
+strip would be `malloc`ed strings, and could be `free`d with egalitarian impunity.
